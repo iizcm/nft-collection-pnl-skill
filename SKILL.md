@@ -1,43 +1,46 @@
 ---
 name: nft-collection-pnl
 description: "Single-file HTML PNL analyzer for NFT collections — FIFO trade analysis across 18 EVM chains, downloadable visual P&L cards (PNG/WebM). Use when user wants to check NFT portfolio profit/loss, generate trade history reports, or create shareable PNL cards. Deployed at https://nft-pnl-report.vercel.app."
-version: 1.0.0
-author: Community
-license: MIT
-platforms: [linux, macos, windows]
-tags: [[]]
+tags: []
 ---
 
-# Nft Collection Pnl — Skill
+# NFT Collection PNL Analyzer
 
-Single-file HTML PNL analyzer for NFT collections — FIFO trade analysis across 18 EVM chains, downloadable visual P&L cards (PNG/WebM). Use when user wants to check NFT portfolio profit/loss, generate trade history reports, or create shareable PNL cards. Deployed at https://nft-pnl-report.vercel.app.
+## WHEN TO USE
+User wants to analyze NFT collection trades → see how many bought/sold/holding, realized/unrealized P&L, and export a visual card.
 
-## Install
+## DEPLOYED URL
+https://nft-pnl-report.vercel.app
 
-```bash
-cp -r <skill-name> ~/.hermes/skills/<skill-path>/
-```
+## HOW IT WORKS
+1. User inputs: wallet address + contract address + Alchemy API key (for most chains)
+2. For RBH chain: Blockscout API used automatically (no API key needed)
+3. Fetches all trades via Alchemy getNFTSales/getAssetTransfers or Blockscout token-transfers
+4. FIFO matching of buys → sells per token ID
+5. Renders stats table + trade history table
+6. Generates a Canvas-based PNL card (1200×675) that can be downloaded as PNG
 
-Or clone this repository:
+## SUPPORTED NETWORKS
+ETH, Arbitrum, Arb Nova, Optimism, Base, Polygon, Polygon zkEVM, zkSync Era, Linea, Scroll, Blast, Zora, Mantle, Mode, Shape, World Chain, Fraxtal, Robinhood Chain (RBH)
 
-```bash
-git clone https://github.com/iizcm/nft-collection-pnl-skill.git ~/.hermes/skills/<skill-path>/
-```
+## KEY FIELDS IN CARD
+- Total Risk (ETH spent buying)
+- Profit (realized from sells)
+- Holding value (floor × held count)
+- Total P&L + ROI %
+- Per-trade table: Token ID, Type (BUY/SELL/HOLD), Source, Buy Price, Sell Price, P&L
 
-## Usage
+## CUSTOMIZATION
+- `by: @username` watermark (cursive font, centered left)
+- Censored mode (blurs text for stealth sharing)
+- Custom background image/video (uploads via file picker)
+- Download as PNG or record as WebM video
 
-Invoke your AI agent with a clear instruction matching this skill's purpose. The agent will route tasks to this skill when the instruction matches its description or trigger keywords.
+## SOURCE CODE
+`/home/ubuntu/nft-work/pnl-app/index.html` — single self-contained HTML file, no build step needed.
 
-Refer to `README.md` in this repository for:
-- Detailed step-by-step installation guide
-- Bilingual documentation (English + Indonesian)
-- Troubleshooting table
-- Security best practices
-- Customization tips
-
-## Safety rules
-
-- Never commit private keys, seed phrases, API tokens, or personal data to version control
-- Use placeholders (`<YOUR_...>`) in all examples and code snippets
-- Validate all outputs before acting on them
-- Keep real credentials in your runtime's secure credential store only
+## IMPORTANT NOTES
+- Alchemy API key stored in `.env` as `ALCHEMY_API_KEY` but NOT hardcoded — user pastes manually into form field (client-side only)
+- File is frontend-only: all API calls from browser, no server component
+- For RBH specifically: uses Blockscout as primary source, no API key needed
+- Memory note: see `references/analytics.md` in local system for full API references
